@@ -1,57 +1,95 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Container,
+  Grid,
+  Toolbar,
+  Typography
+} from '@mui/material'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
+import NewEpisodes from './components/NewEpisodes/NewEpisodes'
+import { ThemeProvider } from '@mui/styles'
+import { createTheme } from '@mui/material'
+
+const theme = createTheme({})
+
+interface User {
+  display_name: string
+  id: string
+  images: {
+    url: string
+  }[]
+}
 
 const Popup = () => {
-  const [count, setCount] = useState(0);
-  const [currentURL, setCurrentURL] = useState<string>();
+  const [user, setUser] = useState<User | undefined>(undefined)
+  const [token, setToken] = useState<string>()
 
-  useEffect(() => {
-    chrome.action.setBadgeText({ text: count.toString() });
-  }, [count]);
-
-  useEffect(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      setCurrentURL(tabs[0].url);
-    });
-  }, []);
-
-  const changeBackground = () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      const tab = tabs[0];
-      if (tab.id) {
-        chrome.tabs.sendMessage(
-          tab.id,
-          {
-            color: "#555555",
-          },
-          (msg) => {
-            console.log("result message:", msg);
-          }
-        );
+  const getUserData = (accessToken: string) => {
+    return axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: 'Bearer ' + accessToken
       }
-    });
-  };
+    })
+  }
+
+  useEffect(() => {
+    if (!token)
+      chrome.runtime.sendMessage({ message: 'login' }, function (response) {
+        if (response.message === 'success') setToken(response.token)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (token) {
+      getUserData(token)
+        .then((res) => {
+          setUser(res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
+  }, [token])
 
   return (
-    <>
-      <ul style={{ minWidth: "700px" }}>
-        <li>Current URL: {currentURL}</li>
-        <li>Current Time: {new Date().toLocaleTimeString()}</li>
-      </ul>
-      <button
-        onClick={() => setCount(count + 1)}
-        style={{ marginRight: "5px" }}
-      >
-        count up
-      </button>
-      <button onClick={changeBackground}>change background</button>
-    </>
-  );
-};
+    <div style={{ minWidth: '700px' }}>
+      <ThemeProvider theme={theme}>
+        <AppBar position='static'>
+          <Toolbar>
+            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+              Spotify Todays
+            </Typography>
+            {user && (
+              <>
+                <Box mr={2}>
+                  <Typography variant='body1'>{`Hello, ${
+                    user.display_name.split(' ')[0]
+                  }`}</Typography>
+                </Box>
+                <Avatar src={user.images[0]?.url} />
+              </>
+            )}
+          </Toolbar>
+        </AppBar>
+        <Container>
+          <Grid container>
+            <Grid item xs={12}>
+              {user && token && <NewEpisodes token={token} />}
+            </Grid>
+          </Grid>
+        </Container>
+      </ThemeProvider>
+    </div>
+  )
+}
 
 ReactDOM.render(
   <React.StrictMode>
     <Popup />
   </React.StrictMode>,
-  document.getElementById("root")
-);
+  document.getElementById('root')
+)
