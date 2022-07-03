@@ -56,7 +56,7 @@ const Popup = () => {
   }, [token])
 
   return (
-    <div style={{ minWidth: '700px' }}>
+    <div style={{ minWidth: '700px', minHeight: '700px' }}>
       <ThemeProvider theme={theme}>
         <AppBar position='static'>
           <Toolbar>

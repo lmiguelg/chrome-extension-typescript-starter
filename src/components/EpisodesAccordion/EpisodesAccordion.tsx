@@ -52,9 +52,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const EpisodesAccordion: FC<Props> = ({ episodes }) => {
   const classes = useStyles()
+
   const handleRedirectEpisode = useCallback((uri: string) => {
     window.location.href = uri
   }, [])
+
   return (
     <>
       {episodes.map((episode) => (

@@ -18,16 +18,6 @@ const NoEpisodes: FC = () => {
             There are no episodes. Come back later!
           </Typography>
         </Grid>
-        <Grid item>
-          <Button
-            variant='contained'
-            color='primary'
-            onClick={() => window.location.reload()}
-            startIcon={<ReplayCircleFilledOutlined />}
-          >
-            Reload
-          </Button>
-        </Grid>
       </Grid>
     </Box>
   )

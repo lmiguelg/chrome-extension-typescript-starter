@@ -34,6 +34,7 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
   const [shows, setShows] = useState<Show[]>([])
   const [next, setNext] = useState('')
   const [newEpisodes, setNewEpisodes] = useState<IEpisode[]>([])
+  const [date, setDate] = useState(new Date('2022-07-01'))
   const classes = useStyles()
 
   const getShowsData = useCallback(
@@ -97,16 +98,14 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
         getShowEpisodesData(show.show.id)
           .then(
             (res) =>
-              moment(res.data.items[0].release_date).isSame(
-                new Date(),
-                'day'
-              ) &&
+              moment(res.data.items[0].release_date).isSame(date, 'day') &&
               newEp.push({ ...res.data.items[0], showName: show.show.name })
           )
           .catch((err) => {
             console.log(err)
           })
       )
+
       setNewEpisodes(newEp)
     }
   }, [next])
@@ -118,6 +117,7 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
           {moment().format('MMMM Do YYYY')}
         </Typography>
       </Box>
+      {console.log('newEpisodes', newEpisodes)}
       {newEpisodes.length > 0 ? (
         <Box mt={2}>
           <EpisodesAccordion episodes={newEpisodes} />
