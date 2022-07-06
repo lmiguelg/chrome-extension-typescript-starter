@@ -43,7 +43,7 @@ const getReturnedParamsFromSpotifyAuth = (hash: any) => {
   return paramsSplitUp
 }
 
-https: chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === 'login') {
     if (user_signed_in) {
       sendResponse({ message: 'success', token: ACCESS_TOKEN })
@@ -66,6 +66,8 @@ https: chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             user_signed_in = true
 
+            chrome.storage.local.set({ authToken: access_token })
+
             setTimeout(() => {
               ACCESS_TOKEN = ''
               user_signed_in = false
@@ -79,14 +81,4 @@ https: chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return true
     }
   }
-  // else if (request.message === 'logout') {
-  //   user_signed_in = false
-  //   chrome.browserAction.setPopup({ popup: './popup.html' }, () => {
-  //     sendResponse('success')
-  //   })
-
-  //   return true
-  // } else if (request.message === 'isUserSignedIn') {
-  //   sendResponse(is_user_signed_in())
-  // }
 })

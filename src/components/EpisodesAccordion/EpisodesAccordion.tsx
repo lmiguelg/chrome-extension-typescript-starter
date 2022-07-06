@@ -6,6 +6,7 @@ import {
   Grid,
   IconButton,
   Theme,
+  Tooltip,
   Typography
 } from '@mui/material'
 import Accordion from '@mui/material/Accordion/Accordion'
@@ -94,12 +95,14 @@ const EpisodesAccordion: FC<Props> = ({ episodes }) => {
                 justifyContent='center'
               >
                 <Grid item>
-                  <IconButton
-                    size='small'
-                    onClick={() => handleRedirectEpisode(episode.uri)}
-                  >
-                    <PlayCircleOutlined />
-                  </IconButton>
+                  <Tooltip title='Listen on spotify'>
+                    <IconButton
+                      size='small'
+                      onClick={() => handleRedirectEpisode(episode.uri)}
+                    >
+                      <PlayCircleOutlined name='Listen on s' />
+                    </IconButton>
+                  </Tooltip>
                 </Grid>
               </Grid>
             </Grid>

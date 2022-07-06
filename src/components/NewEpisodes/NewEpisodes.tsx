@@ -1,12 +1,13 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import moment from 'moment'
-import { Box, Theme, Typography } from '@mui/material'
+import { Box, TextField, Theme, Typography } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles/makeStyles'
 import axios from 'axios'
 import NoEpisodes from '../NoEpisodes/NoEpisodes'
 import EpisodesAccordion, {
   IEpisode
 } from '../EpisodesAccordion/EpisodesAccordion'
+import { DatePicker } from '@mui/x-date-pickers'
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -34,36 +35,32 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
   const [shows, setShows] = useState<Show[]>([])
   const [next, setNext] = useState('')
   const [newEpisodes, setNewEpisodes] = useState<IEpisode[]>([])
-  const [date, setDate] = useState(new Date('2022-07-01'))
+  const [date, setDate] = useState(new Date())
   const classes = useStyles()
 
-  const getShowsData = useCallback(
-    (url?: string) => {
-      return axios.get(url || 'https://api.spotify.com/v1/me/shows', {
-        params: {
-          limit: 20
-        },
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-    },
-    [token]
-  )
+  const getShowsData = (url?: string) => {
+    return axios.get(url || 'https://api.spotify.com/v1/me/shows', {
+      params: {
+        limit: 20
+      },
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+  }
 
-  const getShowEpisodesData = useCallback(
-    (id: string) => {
-      return axios.get(`https://api.spotify.com/v1/shows/${id}/episodes`, {
-        params: {
-          limit: 1
-        },
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
-    },
-    [token]
-  )
+  const getShowEpisodesData = (id: string) => {
+    return axios.get(`https://api.spotify.com/v1/shows/${id}/episodes`, {
+      params: {
+        limit: 1
+      },
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+  }
+
+  console.log(shows)
 
   useEffect(() => {
     if (!shows.length) {
@@ -75,11 +72,7 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
         .catch((err) => {
           console.log(err)
         })
-    }
-  }, [getShowsData, shows.length, token])
-
-  useEffect(() => {
-    if (next) {
+    } else if (next) {
       getShowsData(next)
         .then((res) => {
           setShows([...shows, ...res.data.items])
@@ -89,11 +82,11 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
           console.log(err)
         })
     }
-  }, [getShowsData, next, shows])
+  }, [getShowsData, shows.length, token, next])
 
   useEffect(() => {
     if (!next) {
-      const newEp: IEpisode[] = []
+      let newEp: IEpisode[] = []
       shows.map((show) =>
         getShowEpisodesData(show.show.id)
           .then(
@@ -108,7 +101,7 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
 
       setNewEpisodes(newEp)
     }
-  }, [next])
+  }, [next, date])
 
   return (
     <>
@@ -116,6 +109,20 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
         <Typography className={classes.title} variant='subtitle1'>
           {moment().format('MMMM Do YYYY')}
         </Typography>
+        <Box>
+          <DatePicker
+            label='Date'
+            value={date}
+            inputFormat='DD/MM/YYYY'
+            onChange={(newDate) => {
+              setDate(new Date(newDate || date))
+              setShows([])
+              setNext('')
+              setNewEpisodes([])
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Box>
       </Box>
       {console.log('newEpisodes', newEpisodes)}
       {newEpisodes.length > 0 ? (

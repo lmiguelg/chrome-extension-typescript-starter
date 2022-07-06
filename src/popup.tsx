@@ -13,6 +13,8 @@ import ReactDOM from 'react-dom'
 import NewEpisodes from './components/NewEpisodes/NewEpisodes'
 import { ThemeProvider } from '@mui/styles'
 import { createTheme } from '@mui/material'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 
 const theme = createTheme({})
 
@@ -57,32 +59,34 @@ const Popup = () => {
 
   return (
     <div style={{ minWidth: '700px', minHeight: '700px' }}>
-      <ThemeProvider theme={theme}>
-        <AppBar position='static'>
-          <Toolbar>
-            <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-              Spotify Todays
-            </Typography>
-            {user && (
-              <>
-                <Box mr={2}>
-                  <Typography variant='body1'>{`Hello, ${
-                    user.display_name.split(' ')[0]
-                  }`}</Typography>
-                </Box>
-                <Avatar src={user.images[0]?.url} />
-              </>
-            )}
-          </Toolbar>
-        </AppBar>
-        <Container>
-          <Grid container>
-            <Grid item xs={12}>
-              {user && token && <NewEpisodes token={token} />}
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <ThemeProvider theme={theme}>
+          <AppBar position='static'>
+            <Toolbar>
+              <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+                Spotify Todays
+              </Typography>
+              {user && (
+                <>
+                  <Box mr={2}>
+                    <Typography variant='body1'>{`Hello, ${
+                      user.display_name.split(' ')[0]
+                    }`}</Typography>
+                  </Box>
+                  <Avatar src={user.images[0]?.url} />
+                </>
+              )}
+            </Toolbar>
+          </AppBar>
+          <Container>
+            <Grid container>
+              <Grid item xs={12}>
+                {user && token && <NewEpisodes token={token} />}
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
-      </ThemeProvider>
+          </Container>
+        </ThemeProvider>
+      </LocalizationProvider>
     </div>
   )
 }
