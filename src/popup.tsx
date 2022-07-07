@@ -42,6 +42,7 @@ const Popup = () => {
     if (!token)
       chrome.runtime.sendMessage({ message: 'login' }, function (response) {
         if (response.message === 'success') setToken(response.token)
+        chrome.storage.local.set({ authToken: response.token })
       })
   }, [])
 
