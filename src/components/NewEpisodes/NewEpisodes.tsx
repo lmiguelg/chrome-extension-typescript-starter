@@ -8,6 +8,7 @@ import EpisodesAccordion, {
   IEpisode
 } from '../EpisodesAccordion/EpisodesAccordion'
 import { DatePicker } from '@mui/x-date-pickers'
+import api from '../../api'
 
 const useStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -32,35 +33,12 @@ interface Show {
 }
 
 const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
+  const { getShowsData, getShowEpisodesData } = api()
   const [shows, setShows] = useState<Show[]>([])
   const [next, setNext] = useState('')
   const [newEpisodes, setNewEpisodes] = useState<IEpisode[]>([])
   const [date, setDate] = useState(new Date())
   const classes = useStyles()
-
-  const getShowsData = (url?: string) => {
-    return axios.get(url || 'https://api.spotify.com/v1/me/shows', {
-      params: {
-        limit: 20
-      },
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    })
-  }
-
-  const getShowEpisodesData = (id: string) => {
-    return axios.get(`https://api.spotify.com/v1/shows/${id}/episodes`, {
-      params: {
-        limit: 1
-      },
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    })
-  }
-
-  console.log(shows)
 
   useEffect(() => {
     if (!shows.length) {
@@ -73,7 +51,7 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
           console.log(err)
         })
     } else if (next) {
-      getShowsData(next)
+      getShowsData(next, true)
         .then((res) => {
           setShows([...shows, ...res.data.items])
           setNext(res.data.next)
@@ -124,7 +102,6 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
           />
         </Box>
       </Box>
-      {console.log('newEpisodes', newEpisodes)}
       {newEpisodes.length > 0 ? (
         <Box mt={2}>
           <EpisodesAccordion episodes={newEpisodes} />

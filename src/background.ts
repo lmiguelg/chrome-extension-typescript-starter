@@ -54,7 +54,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           interactive: true
         },
         (redirect_url) => {
-          console.log(redirect_url)
           if (chrome.runtime.lastError) {
             // problem signing in
             console.log('PROBLEM SIGNING IN')
@@ -65,8 +64,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             ACCESS_TOKEN = access_token
 
             user_signed_in = true
-
-            chrome.storage.local.set({ authToken: access_token })
 
             setTimeout(() => {
               ACCESS_TOKEN = ''
