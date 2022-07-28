@@ -83,10 +83,12 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
 
   return (
     <>
-      <Box mt={2}>
-        <Typography className={classes.title} variant='subtitle1'>
-          {moment().format('MMMM Do YYYY')}
-        </Typography>
+      <Box
+        mt={2}
+        display='flex'
+        justifyContent='space-between'
+        alignItems='center'
+      >
         <Box>
           <DatePicker
             label='Date'
@@ -101,6 +103,9 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
             renderInput={(params) => <TextField {...params} />}
           />
         </Box>
+        <Typography className={classes.title} variant='subtitle2'>
+          {moment().format('MMMM Do YYYY')}
+        </Typography>
       </Box>
       {newEpisodes.length > 0 ? (
         <Box mt={2}>
