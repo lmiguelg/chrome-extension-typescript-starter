@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Container,
+  CssBaseline,
   Grid,
   Toolbar,
   Typography
@@ -11,12 +12,11 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import NewEpisodes from './components/NewEpisodes/NewEpisodes'
-import { ThemeProvider } from '@mui/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import { createTheme } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-
-const theme = createTheme({})
+import theme from './styles/theme'
 
 interface User {
   display_name: string
@@ -59,13 +59,19 @@ const Popup = () => {
   }, [token])
 
   return (
-    <div style={{ minWidth: '700px', minHeight: '700px' }}>
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <ThemeProvider theme={theme}>
-          <AppBar position='static'>
-            <Toolbar>
+    <ThemeProvider theme={theme}>
+      <div
+        style={{
+          minWidth: '700px',
+          minHeight: '700px'
+        }}
+      >
+        <CssBaseline />
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <AppBar position='static' color='primary'>
+            <Toolbar variant='dense'>
               <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-                Spotify Todays
+                Daily Pods
               </Typography>
               {user && (
                 <>
@@ -86,9 +92,9 @@ const Popup = () => {
               </Grid>
             </Grid>
           </Container>
-        </ThemeProvider>
-      </LocalizationProvider>
-    </div>
+        </LocalizationProvider>
+      </div>
+    </ThemeProvider>
   )
 }
 
