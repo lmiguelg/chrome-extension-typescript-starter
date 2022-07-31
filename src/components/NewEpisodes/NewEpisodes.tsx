@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import moment from 'moment'
-import { Box, TextField, Theme, Typography } from '@mui/material'
+import { Box, TextField, Theme, Typography, useTheme } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles/makeStyles'
 import axios from 'axios'
 import NoEpisodes from '../NoEpisodes/NoEpisodes'
@@ -91,7 +91,7 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
       >
         <Box>
           <DatePicker
-            label='Date'
+            label='Search a date'
             value={date}
             inputFormat='DD/MM/YYYY'
             onChange={(newDate) => {
@@ -100,7 +100,9 @@ const NewEpisodes: FC<NewEpisodesProps> = ({ token }) => {
               setNext('')
               setNewEpisodes([])
             }}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => (
+              <TextField {...params} variant='standard' size='small' />
+            )}
           />
         </Box>
         <Typography className={classes.title} variant='subtitle2'>

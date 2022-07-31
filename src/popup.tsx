@@ -80,7 +80,10 @@ const Popup = () => {
                       user.display_name.split(' ')[0]
                     }`}</Typography>
                   </Box>
-                  <Avatar src={user.images[0]?.url} />
+                  <Avatar
+                    src={user.images[0]?.url}
+                    style={{ border: '4px solid white' }}
+                  />
                 </>
               )}
             </Toolbar>
